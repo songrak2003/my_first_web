@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>공항 영어 단어장</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="theme.js"></script>
+  <style>
+    main { max-width: 960px; }
+    .toolbar { max-width: 960px; margin: 0 auto; padding: 22px 16px 4px; position: sticky; top: 0; z-index: 15;
+      background: linear-gradient(var(--bg) 80%, transparent); }
+    .toolbar input[type=search] {
+      width: 100%; padding: 14px 20px; font-size: 1.05rem; background: var(--card); color: var(--text);
+      border: 2px solid transparent; border-radius: 999px; box-shadow: var(--shadow);
+      outline: none; transition: border-color .2s, box-shadow .2s;
+    }
+    .toolbar input[type=search]:focus { border-color: var(--accent2); box-shadow: 0 0 0 4px var(--accent-soft); }
+    .tabs { margin: 12px 0 8px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .tabs button {
+      border: 0; background: var(--card); color: var(--accent-ink); padding: 7px 16px; border-radius: 999px;
+      cursor: pointer; font-size: .92rem; font-weight: 700; font-family: inherit;
+      box-shadow: 0 2px 8px rgba(30,41,59,.08); transition: transform .15s, background .2s, color .2s;
+    }
+    .tabs button:hover { transform: translateY(-2px); }
+    .tabs button.on { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; }
+    .opts { font-size: .9rem; color: var(--muted); padding-bottom: 8px; }
+    main > h2 { color: var(--accent-ink); margin: 30px 0 12px; font-size: 1.25rem; }
+    main > h2::before { content: ""; display: inline-block; width: 6px; height: 1.1em; margin-right: 10px;
+      vertical-align: -3px; border-radius: 3px; background: linear-gradient(var(--accent), var(--accent2)); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
+    .card {
+      background: var(--card); border-radius: 16px; padding: 14px 16px; box-shadow: var(--shadow);
+      display: flex; align-items: flex-start; gap: 10px; border: 1px solid transparent;
+      transition: transform .2s, border-color .2s, box-shadow .2s; animation: fadeUp .4s ease both;
+    }
+    .card:hover { transform: translateY(-3px); border-color: var(--accent2); box-shadow: 0 12px 28px rgba(2,132,199,.16); }
+    .card .txt { flex: 1; cursor: pointer; }
+    .en { font-weight: 800; font-size: 1.08rem; color: var(--accent-ink); }
+    .ko { color: var(--muted); margin-top: 2px; }
+    .hide .ko { filter: blur(7px); transition: filter .25s; user-select: none; }
+    .hide .card.show .ko { filter: none; }
+    .say { border: 0; background: var(--accent-soft); border-radius: 12px; padding: 8px 11px; cursor: pointer;
+      font-size: 1.1rem; transition: transform .15s, background .2s; }
+    .say:hover { background: var(--accent2); transform: scale(1.1); }
+    .empty { text-align: center; color: var(--muted); padding: 40px; }
+  </style>
+</head>
+<body class="theme-voca">
+
+  <header>
+    <h1>✈️ 공항 영어 단어장</h1>
+    <p>출국부터 입국까지, 공항에서 꼭 필요한 표현 모음</p>
+    <p class="hdr-links"><a href="index.html">HTML 배우기</a> <a href="css.html">CSS 배우기</a></p>
+  </header>
+
+  <div class="toolbar">
+    <input type="search" id="q" placeholder="영어 또는 한글로 검색 (예: gate, 여권)">
+    <div class="tabs" id="tabs"></div>
+    <div class="opts">
+      <label><input type="checkbox" id="hideKo"> 뜻 가리기 (카드를 누르면 뜻이 보여요 · 암기용)</label>
+    </div>
+  </div>
+
+  <main id="list"></main>
+
+  <footer>🔊 버튼을 누르면 영어 발음을 들을 수 있어요 (브라우저 기능 사용)</footer>
+
+  <script>
+    // 단어장 데이터: [영어, 한글 뜻]. 여기에 줄을 추가하면 단어가 늘어납니다.
+    const DATA = {
+      "체크인·출국": [
+        ["check-in counter", "체크인 카운터"],
+        ["boarding pass", "탑승권"],
+        ["passport", "여권"],
+        ["e-ticket", "전자 항공권"],
+        ["luggage / baggage", "수하물, 짐"],
+        ["carry-on bag", "기내 반입 가방"],
+        ["checked baggage", "위탁 수하물"],
+        ["overweight", "중량 초과"],
+        ["window seat / aisle seat", "창가 좌석 / 통로 좌석"],
+        ["departure", "출발"],
+        ["terminal", "터미널"],
+        ["baggage tag", "수하물 표"]
+      ],
+      "보안검색·출국심사": [
+        ["security check", "보안 검색"],
+        ["immigration", "출입국 심사"],
+        ["metal detector", "금속 탐지기"],
+        ["liquids", "액체류"],
+        ["remove your belt", "벨트를 풀어 주세요"],
+        ["take out your laptop", "노트북을 꺼내 주세요"],
+        ["tray", "바구니(검색용 트레이)"],
+        ["duty-free shop", "면세점"],
+        ["prohibited items", "반입 금지 물품"]
+      ],
+      "탑승": [
+        ["gate", "탑승구"],
+        ["boarding time", "탑승 시간"],
+        ["delayed", "지연된"],
+        ["canceled", "취소된"],
+        ["on time", "정시에"],
+        ["final call", "마지막 탑승 안내"],
+        ["layover / transfer", "경유 / 환승"],
+        ["connecting flight", "연결 항공편"],
+        ["flight number", "항공편 번호"],
+        ["lounge", "라운지"]
+      ],
+      "기내": [
+        ["flight attendant", "승무원"],
+        ["seat belt", "안전벨트"],
+        ["overhead bin", "머리 위 짐칸"],
+        ["tray table", "접이식 테이블"],
+        ["turbulence", "난기류"],
+        ["window shade", "창문 가리개"],
+        ["beef or chicken?", "소고기와 닭고기 중 어느 것으로 하시겠어요?"],
+        ["blanket", "담요"],
+        ["restroom / lavatory", "화장실"],
+        ["airplane mode", "비행기 모드"]
+      ],
+      "입국·세관": [
+        ["arrival", "도착"],
+        ["customs", "세관"],
+        ["declaration form", "세관 신고서"],
+        ["visa", "비자"],
+        ["purpose of your visit", "방문 목적"],
+        ["sightseeing / business", "관광 / 출장"],
+        ["How long will you stay?", "얼마나 머무르실 건가요?"],
+        ["baggage claim", "수하물 찾는 곳"],
+        ["lost baggage", "분실된 수하물"],
+        ["currency exchange", "환전소"],
+        ["taxi stand", "택시 승강장"]
+      ],
+      "유용한 문장": [
+        ["Where is the check-in counter?", "체크인 카운터가 어디예요?"],
+        ["Where is gate 25?", "25번 게이트가 어디예요?"],
+        ["Can I have a window seat?", "창가 좌석으로 주실 수 있나요?"],
+        ["I'd like to check this bag.", "이 가방을 부치고 싶어요."],
+        ["Is this flight on time?", "이 항공편은 정시에 출발하나요?"],
+        ["Excuse me, I missed my flight.", "죄송한데, 비행기를 놓쳤어요."],
+        ["I'm here for sightseeing.", "관광하러 왔습니다."],
+        ["I'll stay for five days.", "5일 동안 머물 거예요."],
+        ["My luggage hasn't arrived.", "제 짐이 나오지 않았어요."],
+        ["Where can I exchange money?", "환전은 어디서 할 수 있나요?"],
+        ["Could you help me, please?", "도와주실 수 있나요?"],
+        ["How do I get to the city center?", "시내까지 어떻게 가나요?"]
+      ]
+    };
+
+    const listEl = document.getElementById('list');
+    const tabsEl = document.getElementById('tabs');
+    const qEl = document.getElementById('q');
+    const hideEl = document.getElementById('hideKo');
+    let current = '전체';
+
+    // 카테고리 버튼 만들기
+    ['전체', ...Object.keys(DATA)].forEach(name => {
+      const b = document.createElement('button');
+      b.textContent = name;
+      b.onclick = () => { current = name; render(); };
+      tabsEl.appendChild(b);
+    });
+
+    function speak(text) {
+      if (!('speechSynthesis' in window)) { alert('이 브라우저는 음성 기능을 지원하지 않아요.'); return; }
+      speechSynthesis.cancel();
+      // "A / B" 형태는 첫 번째 표현만 읽기
+      const u = new SpeechSynthesisUtterance(text.split(' / ')[0]);
+      u.lang = 'en-US'; u.rate = 0.9;
+      speechSynthesis.speak(u);
+    }
+
+    function render() {
+      const q = qEl.value.trim().toLowerCase();
+      [...tabsEl.children].forEach(b => b.classList.toggle('on', b.textContent === current));
+      listEl.classList.toggle('hide', hideEl.checked);
+      listEl.innerHTML = '';
+      let count = 0;
+
+      for (const [cat, words] of Object.entries(DATA)) {
+        if (current !== '전체' && current !== cat) continue;
+        const hits = words.filter(([en, ko]) => !q || en.toLowerCase().includes(q) || ko.includes(q));
+        if (!hits.length) continue;
+        count += hits.length;
+
+        const h = document.createElement('h2');
+        h.textContent = cat + ' (' + hits.length + ')';
+        const grid = document.createElement('div');
+        grid.className = 'grid';
+
+        hits.forEach(([en, ko]) => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          const txt = document.createElement('div');
+          txt.className = 'txt';
+          const e = document.createElement('div'); e.className = 'en'; e.textContent = en;
+          const k = document.createElement('div'); k.className = 'ko'; k.textContent = ko;
+          txt.append(e, k);
+          txt.onclick = () => card.classList.toggle('show');
+          const s = document.createElement('button');
+          s.className = 'say'; s.textContent = '🔊'; s.title = '발음 듣기';
+          s.onclick = () => speak(en);
+          card.append(txt, s);
+          grid.appendChild(card);
+        });
+        listEl.append(h, grid);
+      }
+      if (!count) listEl.innerHTML = '<div class="empty">검색 결과가 없어요 😢</div>';
+    }
+
+    qEl.addEventListener('input', render);
+    hideEl.addEventListener('change', render);
+    render();
+  </script>
+</body>
+</html>

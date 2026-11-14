@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>처음 만나는 CSS</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="theme.js"></script>
+  <style>
+    /* ===== 예제용 스타일 (각 단원의 결과 화면에서 사용) ===== */
+    .ex-color h3 { color: crimson; }
+    .ex-color p  { color: #2563eb; background: #fef9c3; }
+    .ex-class .big   { font-size: 28px; font-weight: bold; }
+    .ex-class .small { font-size: 12px; color: gray; }
+    .ex-id #unique   { color: white; background: #7c3aed; padding: 4px 10px; border-radius: 4px; }
+    .box-demo { background: #bae6fd; border: 4px solid #0284c7; padding: 20px; margin: 20px; width: 200px; }
+    .flex-demo { display: flex; gap: 10px; justify-content: space-around; }
+    .flex-demo div { background: #a7f3d0; padding: 16px 22px; border-radius: 8px; }
+    .hover-btn { background: #ec4899; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1rem; cursor: pointer; transition: all .25s; }
+    .hover-btn:hover { background: #7c3aed; transform: scale(1.1); }
+  </style>
+</head>
+<body class="theme-css">
+
+  <header>
+    <h1>🎨 처음 만나는 CSS</h1>
+    <p>HTML이 뼈대라면, CSS는 옷과 화장입니다. 색과 모양을 마음대로 바꿔봐요.</p>
+  </header>
+
+  <nav>
+    <a href="#what">CSS란?</a>
+    <a href="#how">적용 방법</a>
+    <a href="#select">선택자</a>
+    <a href="#text">글자·색</a>
+    <a href="#box">박스 모델</a>
+    <a href="#layout">배치</a>
+    <a href="#hover">마우스 효과</a>
+    <a href="#play">직접 해보기</a>
+  </nav>
+
+  <main>
+
+    <section id="what">
+      <h2>1. CSS란?</h2>
+      <p><b>CSS</b>(Cascading Style Sheets)는 웹페이지의 <b>겉모습</b>을 꾸미는 언어입니다. 글자 색, 크기, 배경, 간격, 배치를 정해요.</p>
+      <p>CSS의 기본 문장은 이렇게 생겼습니다.</p>
+<pre>선택자 {
+  속성: 값;
+  속성: 값;
+}</pre>
+      <p>"<b>어떤 것을</b> { <b>무엇을</b>: <b>어떻게</b> }" 라고 읽으면 됩니다. 각 줄 끝에는 세미콜론 <code>;</code>을 꼭 붙이세요.</p>
+<pre>h1 {
+  color: red;        ← 글자색을 빨강으로
+  font-size: 40px;   ← 글자 크기를 40픽셀로
+}</pre>
+      <p>→ "모든 <code>&lt;h1&gt;</code>의 글자색은 빨강, 크기는 40px로 해라"</p>
+    </section>
+
+    <section id="how">
+      <h2>2. HTML에 CSS 붙이는 방법</h2>
+      <p>세 가지가 있지만, 초보자는 <b>①번과 ②번</b>만 알면 충분합니다.</p>
+
+      <div class="label">① <code>&lt;style&gt;</code> 태그 안에 쓰기 (이 페이지가 쓰는 방식)</div>
+<pre>&lt;head&gt;
+  &lt;style&gt;
+    h1 { color: red; }
+  &lt;/style&gt;
+&lt;/head&gt;</pre>
+
+      <div class="label">② 별도 파일로 만들어 연결하기 (실무에서 가장 많이 사용)</div>
+<pre>&lt;!-- HTML 파일의 head 안에 --&gt;
+&lt;link rel="stylesheet" href="style.css"&gt;
+
+/* style.css 파일 안에는 CSS만 적어요 */
+h1 { color: red; }</pre>
+
+      <div class="label">③ 태그에 직접 쓰기 (간단히 한 번만 쓸 때)</div>
+<pre>&lt;p style="color: red;"&gt;빨간 글씨&lt;/p&gt;</pre>
+      <div class="result"><p style="color: red; margin:0">빨간 글씨</p></div>
+    </section>
+
+    <section id="select">
+      <h2>3. 선택자: "누구를 꾸밀까?"</h2>
+
+      <div class="label">① 태그 이름으로 선택 → 그 태그 전부</div>
+<pre>h3 { color: crimson; }
+p  { color: #2563eb; background: #fef9c3; }</pre>
+      <div class="result ex-color">
+        <h3 style="margin:0">제목입니다</h3>
+        <p style="margin:6px 0 0">문단입니다</p>
+      </div>
+
+      <div class="label">② 클래스(.) → 여러 개에 이름표를 붙여서 선택</div>
+<pre>&lt;span class="big"&gt;큰 글씨&lt;/span&gt;
+&lt;span class="small"&gt;작은 글씨&lt;/span&gt;
+
+.big   { font-size: 28px; font-weight: bold; }
+.small { font-size: 12px; color: gray; }</pre>
+      <div class="result ex-class">
+        <span class="big">큰 글씨</span> <span class="small">작은 글씨</span>
+      </div>
+
+      <div class="label">③ 아이디(#) → 딱 하나에만 붙이는 고유 이름표</div>
+<pre>&lt;span id="unique"&gt;나만의 스타일&lt;/span&gt;
+
+#unique { color: white; background: #7c3aed; }</pre>
+      <div class="result ex-id"><span id="unique">나만의 스타일</span></div>
+
+      <div class="tip">💡 점(<code>.</code>)은 클래스, 샵(<code>#</code>)은 아이디. 이름표를 여러 곳에 쓰려면 <b>클래스</b>를 쓰세요.</div>
+    </section>
+
+    <section id="text">
+      <h2>4. 글자와 색</h2>
+      <table border="1" cellpadding="8" style="border-collapse:collapse; width:100%">
+        <tr><th>속성</th><th>하는 일</th><th>예시 값</th></tr>
+        <tr><td><code>color</code></td><td>글자색</td><td><code>red</code>, <code>#ff0000</code>, <code>rgb(255,0,0)</code></td></tr>
+        <tr><td><code>background</code></td><td>배경색</td><td><code>yellow</code>, <code>#fef9c3</code></td></tr>
+        <tr><td><code>font-size</code></td><td>글자 크기</td><td><code>20px</code>, <code>1.5rem</code></td></tr>
+        <tr><td><code>font-weight</code></td><td>굵기</td><td><code>bold</code>, <code>normal</code></td></tr>
+        <tr><td><code>text-align</code></td><td>글자 정렬</td><td><code>left</code>, <code>center</code>, <code>right</code></td></tr>
+      </table>
+      <div class="tip">💡 색은 이름(<code>red</code>), 16진수 코드(<code>#ff0000</code>)로 쓸 수 있어요. 구글에서 "color picker"를 검색하면 원하는 색의 코드를 쉽게 찾을 수 있습니다.</div>
+    </section>
+
+    <section id="box">
+      <h2>5. 박스 모델: 모든 요소는 상자다</h2>
+      <p>웹페이지의 모든 요소는 <b>네모난 상자</b>입니다. 상자는 바깥에서 안쪽으로 이렇게 구성돼요.</p>
+      <ul>
+        <li><code>margin</code> (바깥 여백): 다른 상자와의 거리</li>
+        <li><code>border</code> (테두리): 상자의 선</li>
+        <li><code>padding</code> (안쪽 여백): 테두리와 내용 사이 거리</li>
+        <li>내용 (content): 글자나 이미지</li>
+      </ul>
+<pre>.box {
+  width: 200px;
+  background: #bae6fd;
+  border: 4px solid #0284c7;
+  padding: 20px;
+  margin: 20px;
+}</pre>
+      <div class="result">
+        <div class="box-demo">내용이 들어가는 상자</div>
+      </div>
+      <div class="tip">💡 <code>padding</code>을 키우면 상자 안이 넓어지고, <code>margin</code>을 키우면 상자 밖이 넓어집니다. 직접 해보기에서 숫자를 바꿔 보세요!</div>
+    </section>
+
+    <section id="layout">
+      <h2>6. 나란히 배치하기 (Flexbox)</h2>
+      <p>상자를 가로로 나란히 놓고 싶을 때 가장 쉬운 방법은 <code>display: flex</code>입니다. 부모 상자에 적어요.</p>
+<pre>.flex-demo {
+  display: flex;
+  gap: 10px;                    /* 상자 사이 간격 */
+  justify-content: space-around; /* 가로 정렬 방식 */
+}</pre>
+      <div class="result">
+        <div class="flex-demo"><div>1</div><div>2</div><div>3</div></div>
+      </div>
+      <div class="tip">💡 <code>justify-content</code>를 <code>center</code>, <code>flex-start</code>, <code>space-between</code>으로 바꿔 보세요.</div>
+    </section>
+
+    <section id="hover">
+      <h2>7. 마우스를 올리면 변하는 효과</h2>
+      <p><code>:hover</code>를 선택자 뒤에 붙이면 "마우스를 올렸을 때"의 모양을 정할 수 있습니다.</p>
+<pre>button {
+  background: #ec4899;
+  transition: all .25s;   /* 부드럽게 변하게 */
+}
+button:hover {
+  background: #7c3aed;
+  transform: scale(1.1);  /* 1.1배 커지게 */
+}</pre>
+      <div class="result">
+        <button class="hover-btn">마우스를 올려보세요</button>
+      </div>
+    </section>
+
+    <section id="play">
+      <h2>8. ✏️ 직접 해보기</h2>
+      <p>HTML과 CSS가 함께 들어 있습니다. <code>&lt;style&gt;</code> 안의 값을 바꿔 보세요.</p>
+      <div class="label">코드 (여기를 수정하세요)</div>
+      <textarea id="code" spellcheck="false">&lt;style&gt;
+  body { background: #fef3c7; font-family: sans-serif; }
+  h1 { color: #b45309; text-align: center; }
+  .card {
+    background: white;
+    border: 3px solid #f59e0b;
+    border-radius: 16px;
+    padding: 20px;
+    margin: 20px auto;
+    width: 260px;
+  }
+&lt;/style&gt;
+
+&lt;h1&gt;내 카드&lt;/h1&gt;
+&lt;div class="card"&gt;
+  &lt;p&gt;CSS로 꾸민 카드예요.&lt;/p&gt;
+&lt;/div&gt;</textarea>
+      <div class="label">결과 화면</div>
+      <iframe id="preview"></iframe>
+      <p><b>도전 과제:</b></p>
+      <ol>
+        <li>배경색 <code>#fef3c7</code>을 <code>lightblue</code>로 바꿔 보세요.</li>
+        <li><code>border-radius</code>를 <code>0</code>과 <code>50px</code>으로 바꿔 어떻게 달라지는지 보세요.</li>
+        <li><code>.card</code>의 <code>width</code>를 <code>400px</code>로 바꿔 보세요.</li>
+        <li>카드를 하나 더 복사해서 두 개로 만들어 보세요.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>🎉 다음 단계</h2>
+      <p>HTML(뼈대)과 CSS(꾸미기)를 배웠어요! 이제 <code>index.html</code>에서 배운 뼈대에 CSS를 입혀 나만의 자기소개 페이지를 만들어 보세요.</p>
+      <p>그다음 단계는 웹페이지를 움직이게 하는 <b>JavaScript</b>입니다.</p>
+      <a class="back" href="index.html" style="background:#db2777; padding:10px 18px; border-radius:8px; text-decoration:none;">← HTML 입문 페이지로</a>
+    </section>
+
+  </main>
+
+  <footer>나의 첫 번째 홈페이지 · CSS 입문서</footer>
+
+  <script>
+    const code = document.getElementById('code');
+    const preview = document.getElementById('preview');
+    function update() { preview.srcdoc = code.value; }
+    code.addEventListener('input', update);
+    update();
+  </script>
+</body>
+</html>
